@@ -4,7 +4,7 @@ const db = require("../../db/connection");
 const inputCheck = require("../../utils/inputCheck");
 
 // retrieve all candidates from db
-router.get("/api/candidates", (req, res)=> {
+router.get("/candidates", (req, res)=> {
     const sql = `SELECT c.*, p.name
                     AS party_name
                     FROM candidates c
@@ -23,7 +23,7 @@ router.get("/api/candidates", (req, res)=> {
 });
 
 // retreive single candidate from db
-router.get("/api/candidate/:id", (req, res) => {
+router.get("/candidate/:id", (req, res) => {
     const id = [req.params.id];
     const sql = `SELECT c.*, p.name
                     AS party_name
@@ -44,7 +44,7 @@ router.get("/api/candidate/:id", (req, res) => {
 });
 
 // create new candidate
-router.post("/api/candidate", ({ body }, res) => {
+router.post("/candidate", ({ body }, res) => {
     const errors = inputCheck(body, "first_name", "last_name", "industry_connected");
     if(errors){
         res.status(400).json({ error: errors });
@@ -67,7 +67,7 @@ router.post("/api/candidate", ({ body }, res) => {
 });
 
 // delete selected user
-router.delete("/api/candidate/:id", (req, res) => {
+router.delete("/candidate/:id", (req, res) => {
     const id = [req.params.id];
     db.query(`DELETE FROM candidates WHERE id=?`, id, (err, result) => {
         if (err) {
@@ -87,7 +87,7 @@ router.delete("/api/candidate/:id", (req, res) => {
 });
 
 // update candidate party affiliation
-router.put("/api/candidate/:id",  (req, res) => {
+router.put("/candidate/:id",  (req, res) => {
     const errors = inputCheck(req.body, "party_id");
     if (errors){
         res.status(400).json({ error: errors});
