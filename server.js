@@ -36,13 +36,18 @@ const params = [1, "Ronald", "Firbank", 1];
 
 // retrieve all candidates from db
 app.get("/api/candidates", (req, res)=> {
-    db.query(`SELECT * FROM candidates`, (err, rows) => {
+    const sql = `SELECT c.*, p.name
+                    AS party_name
+                    FROM candidates c
+                    LEFT JOIN parties p
+                    ON c.party_id = p.id`
+    db.query(sql, (err, rows) => {
         if(err){
             res.status(500).json({error:err.message});
             return;
         }
         res.json({
-            message:"succes",
+            message:"success",
             data:rows
         });
     });
@@ -50,8 +55,14 @@ app.get("/api/candidates", (req, res)=> {
 
 // retreive single candidate from db
 app.get("/api/candidate/:id", (req, res) => {
-    const id = [req.params.id]
-    db.query(`SELECT * FROM candidates WHERE id=?`, id, (err, result) => {
+    const id = [req.params.id];
+    const sql = `SELECT c.*, p.name
+                    AS party_name
+                    FROM candidates c
+                    LEFT JOIN parties p
+                    ON c.party_id = p.id
+                    WHERE c.id = ?`
+    db.query(sql, id, (err, result) => {
         if (err){ 
             res.status(400).json({error:err.message});
             return;
